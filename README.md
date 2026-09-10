@@ -1,4 +1,4 @@
-# AI & Machine Learning Platform Documentation
+# AI & ML Documentation
 
 Comprehensive architecture, API reference, operational guides, and workflow documentation for both microservices in the platform:
 1. **`ML_Model_KNN`** — High-Performance Multi-Model ML Inference Microservice (`:8000`)
@@ -64,11 +64,6 @@ ML_Model_KNN/
 │   ├── titanic_pipeline.joblib       # Serialized Titanic LinearSVC model artifact
 │   ├── model_metadata.json           # Version, accuracy (100%), and Iris feature metadata
 │   └── titanic_metadata.json         # Version, accuracy (84.92%), imputation medians & columns
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py                   # Pytest TestClient fixture with lifespan loader
-│   ├── test_iris_api.py              # 6 unit & validation tests for Iris
-│   └── test_titanic_api.py           # 11 unit & validation tests for Titanic & Health
 ├── Dockerfile                        # Multi-stage container (Python 3.13-slim + uv + non-root user)
 ├── docker-compose.yml                # Standalone test orchestration file
 ├── pyproject.toml                    # Dependencies (FastAPI, Scikit-Learn, Joblib, etc.)
@@ -150,7 +145,6 @@ ML_Model_KNN/
       }
     }
     ```
-* **`POST /iris/predict/batch`**: Accepts `{"samples": [...]}` and returns predictions for all samples.
 * **`GET /iris/metadata`**: Returns model parameters, training timestamp, and feature list.
 
 ### Titanic Endpoints
@@ -199,7 +193,7 @@ ML_Model_KNN/
 
 ---
 
-## 5. Local Setup & Testing (`ML_Model_KNN`)
+## 5. Local Setup (`ML_Model_KNN`)
 
 ```bash
 # 1. Navigate to service directory
@@ -212,9 +206,6 @@ uv sync
 uv run python train_pipeline.py
 uv run python train_titanic.py
 
-# 4. Run Pytest test suite (17 tests)
-uv run python -m pytest tests/ -v
-
 # 5. Run API development server
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
@@ -222,7 +213,7 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ---
 ---
 
-# PART 2: `Call_ML_Model` — Autonomous AI Agent & React Visualizer
+# PART 2: `Call_ML_Model` — AI Agent: ReAct
 
 ## 1. Overview & Architecture
 
@@ -290,10 +281,6 @@ Call_ML_Model/
 │   │       ├── __init__.py
 │   │       ├── chat.py               # POST /api/v1/analyze
 │   │       └── health.py             # GET /health/live & GET /health/ready
-│   ├── tests/
-│   │   ├── __init__.py
-│   │   ├── conftest.py               # Pytest client fixture with lifespan
-│   │   └── test_api.py               # 8 unit & integration tests for agent endpoints
 │   ├── .env                          # Local credentials (GROQ_API_KEY)
 │   ├── Dockerfile                    # Multi-stage Python 3.13-slim build with non-root user
 │   ├── pyproject.toml                # Dependencies (FastAPI, LangChain, Groq, etc.)
@@ -348,7 +335,7 @@ The agent runs a 4-step autonomous reasoning cycle:
 sequenceDiagram
     autonumber
     actor User as 👤 User
-    participant Agent as 🧠 BotanicalAgent
+    participant Agent as 🧠 Agent
     participant LLM as ⚡ Groq LLM (gpt-oss-120b)
     participant Tools as 🛠️ LangChain Tools
     participant ML as ⚙️ ML_Model_KNN (:8000)
@@ -455,10 +442,6 @@ location /api/ {
 ```
 * Limits each unique client IP to **10 requests/second** with a burst buffer of 20.
 * Abusive clients immediately receive **HTTP 429 Too Many Requests** at the Nginx edge without loading the Python backend.
-
-### C. Caching Strategy
-* **Hashed Assets (`.js`, `.css`)**: Cached in client browsers for **1 year** (`Cache-Control: public, immutable`).
-* **HTML (`index.html`)**: Stamped with `no-cache, no-store, must-revalidate` so deployments take effect immediately.
 
 ---
 
