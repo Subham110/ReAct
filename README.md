@@ -234,8 +234,8 @@ flowchart LR
         Nginx -->|/api/*| Backend1["agent-backend-1"]
         Nginx -->|/api/*| Backend2["agent-backend-2"]
         
-        Backend1 & Backend2 --> ReAct["BotanicalAgent Loop"]
-        ReAct <-->|LLM Inference| Groq["Groq Cloud API"]
+        Backend1 & Backend2 --> ReAct["Agent Loop"]
+        ReAct <-->|LLM Inference| Groq["Groq API"]
         ReAct --> Tools["LangChain @tools"]
     end
 
