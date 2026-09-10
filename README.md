@@ -74,7 +74,7 @@ ML_Model_KNN/
 
 ---
 
-## 3. Machine Learning Models & Engineering Details
+## 3. ML Models & Engineering Details 
 
 ### A. Iris Species Classification
 * **Algorithm**: $K$-Nearest Neighbors Classifier ($k=7$, Manhattan distance metric, distance-weighted).
@@ -111,7 +111,7 @@ ML_Model_KNN/
     "status": "ready",
     "models": {
       "iris": {"loaded": true, "version": "1.4.0", "model_type": "KNeighborsClassifier"},
-      "titanic": {"loaded": true, "version": "1.0.0", "model_type": "LinearSVC"}
+      "titanic": {"loaded": true, "version": "1.0.3", "model_type": "LinearSVC"}
     }
   }
   ```
