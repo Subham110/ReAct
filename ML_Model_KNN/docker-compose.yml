@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ml-model-api:2.0.0
+    image: ml-model-api:2.1.3
     container_name: ml_model_api
     restart: unless-stopped
     ports:
