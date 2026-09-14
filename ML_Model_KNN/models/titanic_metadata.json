@@ -1,0 +1,79 @@
+{
+  "model_version": "1.0.3",
+  "model_type": "LinearSVC",
+  "accuracy": 0.8492,
+  "classification_report": {
+    "0": {
+      "precision": 0.8608695652173913,
+      "recall": 0.9,
+      "f1-score": 0.88,
+      "support": 110.0
+    },
+    "1": {
+      "precision": 0.828125,
+      "recall": 0.7681159420289855,
+      "f1-score": 0.7969924812030075,
+      "support": 69.0
+    },
+    "accuracy": 0.8491620111731844,
+    "macro avg": {
+      "precision": 0.8444972826086956,
+      "recall": 0.8340579710144927,
+      "f1-score": 0.8384962406015037,
+      "support": 179.0
+    },
+    "weighted avg": {
+      "precision": 0.8482473585134808,
+      "recall": 0.8491620111731844,
+      "f1-score": 0.8480026882849583,
+      "support": 179.0
+    }
+  },
+  "feature_columns": [
+    "Pclass",
+    "Age",
+    "SibSp",
+    "Parch",
+    "Fare",
+    "FamilySize",
+    "IsAlone",
+    "HasCabin",
+    "Sex_female",
+    "Sex_male",
+    "Embarked_C",
+    "Embarked_Q",
+    "Embarked_S",
+    "Title_Master",
+    "Title_Miss",
+    "Title_Mr",
+    "Title_Mrs",
+    "Title_Rare"
+  ],
+  "age_medians": {
+    "Master_1": 4.0,
+    "Master_2": 1.0,
+    "Master_3": 4.0,
+    "Miss_1": 30.0,
+    "Miss_2": 24.0,
+    "Miss_3": 18.0,
+    "Mr_1": 40.0,
+    "Mr_2": 31.0,
+    "Mr_3": 26.0,
+    "Mrs_1": 40.0,
+    "Mrs_2": 32.0,
+    "Mrs_3": 31.0,
+    "Rare_1": 48.5,
+    "Rare_2": 46.5
+  },
+  "global_age_median": 28.0,
+  "fare_median": 14.4542,
+  "hyperparameters": {
+    "C": 0.1,
+    "dual": false,
+    "max_iter": 10000
+  },
+  "scaler": "StandardScaler",
+  "dataset_size": 891,
+  "train_size": 712,
+  "test_size": 179
+}

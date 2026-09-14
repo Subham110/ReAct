@@ -1,0 +1,18 @@
+{
+  "model_version": "1.4.0",
+  "model_type": "KNeighborsClassifier",
+  "features": [
+    "sepal_length",
+    "sepal_width",
+    "petal_length",
+    "petal_width"
+  ],
+  "classes": [
+    "setosa",
+    "versicolor",
+    "virginica"
+  ],
+  "accuracy": 1.0,
+  "n_neighbors": 7,
+  "scaler": "StandardScaler"
+}

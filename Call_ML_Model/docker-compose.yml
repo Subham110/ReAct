@@ -1,0 +1,109 @@
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Multi-Model ML Inference Service (:8000)
+  # ----------------------------------------------------------------------------
+  ml-api:
+    build:
+      context: ../ML_Model_KNN
+      dockerfile: Dockerfile
+    image: ml-model-api:2.0.0
+    container_name: ml_model_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - LOG_LEVEL=INFO
+      - IRIS_MODEL_PATH=models/knn_pipeline.joblib
+      - IRIS_METADATA_PATH=models/model_metadata.json
+      - TITANIC_MODEL_PATH=models/titanic_pipeline.joblib
+      - TITANIC_METADATA_PATH=models/titanic_metadata.json
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - botaniq-net
+
+  # ----------------------------------------------------------------------------
+  # 2. AI Agent Backend — Instance 1 (:8001)
+  # ----------------------------------------------------------------------------
+  agent-backend-1:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ml-agent-backend:2.0.0
+    container_name: ml_agent_backend_1
+    restart: unless-stopped
+    expose:
+      - "8001"
+    env_file:
+      - ./backend/.env
+    environment:
+      - KNN_SERVICE_URL=http://ml-api:8000
+      - LOG_LEVEL=INFO
+    depends_on:
+      ml-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health/live')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - botaniq-net
+
+  # ----------------------------------------------------------------------------
+  # 3. AI Agent Backend — Instance 2 (:8001)
+  # ----------------------------------------------------------------------------
+  agent-backend-2:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ml-agent-backend:2.0.0
+    container_name: ml_agent_backend_2
+    restart: unless-stopped
+    expose:
+      - "8001"
+    env_file:
+      - ./backend/.env
+    environment:
+      - KNN_SERVICE_URL=http://ml-api:8000
+      - LOG_LEVEL=INFO
+    depends_on:
+      ml-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health/live')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - botaniq-net
+
+  # ----------------------------------------------------------------------------
+  # 4. React Frontend + Nginx Reverse Proxy & Load Balancer (:80)
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ml-ai-frontend:2.0.0
+    container_name: ml_ai_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      agent-backend-1:
+        condition: service_healthy
+      agent-backend-2:
+        condition: service_healthy
+    networks:
+      - botaniq-net
+
+networks:
+  botaniq-net:
+    driver: bridge

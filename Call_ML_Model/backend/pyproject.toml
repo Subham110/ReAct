@@ -1,0 +1,30 @@
+[project]
+name = "call-ml-model-backend"
+version = "0.1.0"
+description = "FastAPI + LangChain-Groq AI Agent backend"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.141.1",
+    "uvicorn[standard]>=0.52.4",
+    "gunicorn>=26.2.0",
+    "langchain>=0.3.25",
+    "langchain-groq>=0.3.2",
+    "langchain-core>=0.3.55",
+    "httpx>=0.28.1",
+    "pydantic>=2.13.4",
+    "pydantic-settings>=2.15.0",
+    "python-dotenv>=1.1.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
