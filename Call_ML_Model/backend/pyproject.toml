@@ -1,6 +1,6 @@
 [project]
 name = "call-ml-model-backend"
-version = "0.1.0"
+version = "2.0.4"
 description = "FastAPI + LangChain-Groq AI Agent backend"
 readme = "README.md"
 requires-python = ">=3.13"
