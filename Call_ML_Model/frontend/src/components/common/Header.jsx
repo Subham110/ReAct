@@ -24,8 +24,8 @@ const Header = () => {
             <div>
               <h1 className="text-lg text-gray items-center">ML Predictor</h1>
               <p className="text-xs text-gray-400 font-medium tracking-wide">Iris & Titanic AI</p>
+              
             </div>
-            <div className={`w-2 h-2 rounded-full mt-0.5 ${isHealthy ? 'bg-emerald-400 shadow-emerald-400/50 shadow-sm' : 'bg-red-400 shadow-red-400/50 shadow-sm'}`} title={isHealthy ? 'All models healthy' : 'Service unavailable'}></div>
           </div>
         </div>
       </header>

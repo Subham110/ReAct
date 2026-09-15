@@ -23,33 +23,17 @@ const ChatInput = ({ onSubmit, loading }) => {
           Quick Samples
         </span>
 
-        {/* 🌸 Iris Presets */}
+        {/*Iris Presets */}
         <button 
           onClick={() => fillPreset("Classify: sepal 5.1, 3.5, petal 1.4, 0.2")}
           className="text-xs bg-gray-800 hover:bg-gray-700/60 text-white/80 hover:text-green-300 border border-gray-700 hover:border-green-700/50 px-3 py-1.5 rounded-full transition-colors">
-          🌸 Setosa
+          Iris
         </button>
-        <button 
-          onClick={() => fillPreset("Classify: sepal 5.9, 2.8, petal 4.2, 1.3")}
-          className="text-xs bg-gray-800 hover:bg-gray-700/60 text-white/80 hover:text-amber-300 border border-gray-700 hover:border-amber-700/50 px-3 py-1.5 rounded-full transition-colors">
-          🌸 Versicolor
-        </button>
-        <button 
-          onClick={() => fillPreset("Classify: sepal 6.5, 3.0, petal 5.5, 2.0")}
-          className="text-xs bg-gray-800 hover:bg-gray-700/60 text-white/80 hover:text-violet-300 border border-gray-700 hover:border-violet-700/50 px-3 py-1.5 rounded-full transition-colors">
-          🌸 Virginica
-        </button>
-
-        {/* 🚢 Titanic Presets */}
-        <button 
-          onClick={() => fillPreset("Would Rose survive? 1st class, female, age 17, fare 512, cabin B20, embarked S")}
-          className="text-xs bg-gray-800 hover:bg-gray-700/60 text-white/80 hover:text-emerald-300 border border-gray-700 hover:border-emerald-700/50 px-3 py-1.5 rounded-full transition-colors">
-          🚢 1st Class Woman
-        </button>
+        {/* Titanic Presets */}
         <button 
           onClick={() => fillPreset("Would Jack survive? 3rd class, male, age 20, fare 5, no cabin, embarked S")}
           className="text-xs bg-gray-800 hover:bg-gray-700/60 text-white/80 hover:text-red-300 border border-gray-700 hover:border-red-700/50 px-3 py-1.5 rounded-full transition-colors">
-          🚢 3rd Class Man
+         Titanic
         </button>
       </div>
 

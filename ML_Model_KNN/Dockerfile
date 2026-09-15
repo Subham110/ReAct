@@ -1,6 +1,4 @@
-# ==============================================================================
 # STAGE 1: Builder (Installs dependencies with uv)
-# ==============================================================================
 FROM python:3.12-slim-bookworm AS builder
 
 # Install uv binary from official Astral image
@@ -23,9 +21,7 @@ RUN rm -rf /app/.venv/lib/python*/site-packages/pandas/tests \
     find /app/.venv -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true && \
     find /app/.venv -type f -name "*.pyc" -delete
 
-# ==============================================================================
 # STAGE 2: Clean Production Runtime
-# ==============================================================================
 FROM python:3.12-slim-bookworm AS runner
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
