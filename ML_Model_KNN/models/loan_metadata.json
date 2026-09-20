@@ -1,0 +1,52 @@
+{
+  "model_version": "1.0.5",
+  "model_type": "RandomForestClassifier",
+  "algorithm": "RandomForestClassifier",
+  "accuracy": 0.9778,
+  "features": [
+    "no_of_dependents",
+    "education",
+    "self_employed",
+    "income_annum",
+    "loan_amount",
+    "loan_term",
+    "cibil_score",
+    "residential_assets_value",
+    "commercial_assets_value",
+    "luxury_assets_value",
+    "bank_asset_value"
+  ],
+  "feature_importance": {
+    "no_of_dependents": 0.0061,
+    "education": 0.0019,
+    "self_employed": 0.0017,
+    "income_annum": 0.0144,
+    "loan_amount": 0.0259,
+    "loan_term": 0.0495,
+    "cibil_score": 0.8472,
+    "residential_assets_value": 0.0132,
+    "commercial_assets_value": 0.013,
+    "luxury_assets_value": 0.0153,
+    "bank_asset_value": 0.0118
+  },
+  "cibil_thresholds": {
+    "poor": [
+      300,
+      549
+    ],
+    "fair": [
+      550,
+      649
+    ],
+    "good": [
+      650,
+      749
+    ],
+    "excellent": [
+      750,
+      900
+    ]
+  },
+  "training_samples": 3415,
+  "test_samples": 854
+}
