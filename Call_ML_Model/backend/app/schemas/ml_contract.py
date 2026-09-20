@@ -54,6 +54,33 @@ class TitanicPrediction(BaseModel):
     input_features: dict[str, Any]
 
 
+# ── Loan Contracts ─────────────────────────────────────
+
+class LoanFeatures(BaseModel):
+    no_of_dependents: int = Field(..., ge=0, le=10)
+    education: str = Field(..., description="'Graduate' or 'Not Graduate'")
+    self_employed: str = Field(..., description="'Yes' or 'No'")
+    income_annum: float = Field(..., gt=0)
+    loan_amount: float = Field(..., gt=0)
+    loan_term: int = Field(..., gt=0, le=30)
+    cibil_score: int = Field(..., ge=300, le=900)
+    residential_assets_value: float = Field(default=0.0, ge=0)
+    commercial_assets_value: float = Field(default=0.0, ge=0)
+    luxury_assets_value: float = Field(default=0.0, ge=0)
+    bank_asset_value: float = Field(default=0.0, ge=0)
+
+
+class LoanPrediction(BaseModel):
+    approved: bool
+    approval_probability: float
+    confidence: float
+    cibil_rating: str
+    risk_factors: dict[str, str]
+    financial_summary: dict[str, Any]
+    feature_importance: dict[str, float]
+    input_features: dict[str, Any]
+
+
 # ── Health Contracts ───────────────────────────────────
 
 class ModelStatusDetail(BaseModel):
