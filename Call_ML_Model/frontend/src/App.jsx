@@ -3,7 +3,7 @@ import Header from './components/common/Header';
 import ChatInput from './components/chat/ChatInput';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import ErrorAlert from './components/common/ErrorAlert';
-import { IrisAIVisualizer, TitanicAIVisualizer } from './components/visualizer';
+import { IrisAIVisualizer, TitanicAIVisualizer, LoanAIVisualizer } from './components/visualizer';
 import { useBotanicalAgent } from './hooks/useBotanicalAgent';
 
 function App() {
@@ -34,6 +34,10 @@ function App() {
 
             {result && !loading && domain === 'titanic' && (
               <TitanicAIVisualizer result={result} processingTime={processingTime} />
+            )}
+
+            {result && !loading && domain === 'loan' && (
+              <LoanAIVisualizer result={result} processingTime={processingTime} />
             )}
           </div>
 
