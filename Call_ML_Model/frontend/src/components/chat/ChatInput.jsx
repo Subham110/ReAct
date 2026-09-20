@@ -35,6 +35,12 @@ const ChatInput = ({ onSubmit, loading }) => {
           className="text-xs bg-gray-800 hover:bg-gray-700/60 text-white/80 hover:text-red-300 border border-gray-700 hover:border-red-700/50 px-3 py-1.5 rounded-full transition-colors">
          Titanic
         </button>
+        {/* Loan Presets */}
+        <button
+          onClick={() => fillPreset("Graduate, not self-employed, 2 dependents, earning 60 lakhs, wants 1 crore loan for 10 years, CIBIL 750, residential assets 80 lakhs, bank assets 20 lakhs")}
+          className="text-xs bg-gray-800 hover:bg-gray-700/60 text-white/80 hover:text-emerald-300 border border-gray-700 hover:border-emerald-700/50 px-3 py-1.5 rounded-full transition-colors">
+          Loan
+        </button>
       </div>
 
       <form onSubmit={handleSubmit} className="flex gap-2">
@@ -42,7 +48,7 @@ const ChatInput = ({ onSubmit, loading }) => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter iris measurements or describe a Titanic passenger..."
+          placeholder="Enter iris measurements, a Titanic passenger, or loan details..."
           disabled={loading}
           className="flex-1 bg-white/10 border border-white/20 text-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-black/60 disabled:opacity-50"
         />

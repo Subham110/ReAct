@@ -10,5 +10,11 @@ export { default as SurvivalGauge } from './titanic/SurvivalGauge';
 export { default as DemographicBenchmark } from './titanic/DemographicBenchmark';
 export { default as PassengerProfileCard } from './titanic/PassengerProfileCard';
 
+// Loan Components
+export { default as LoanAIVisualizer } from './loan/LoanAIVisualizer';
+export { default as ApprovalGauge } from './loan/ApprovalGauge';
+export { default as AssetBreakdownChart } from './loan/AssetBreakdownChart';
+export { default as FinancialProfileCard } from './loan/FinancialProfileCard';
+
 // Shared Components
 export { default as AIExplanation } from './common/AIExplanation';
