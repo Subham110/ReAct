@@ -1,5 +1,5 @@
 # STAGE 1: Builder (Installs dependencies with uv)
-FROM python:3.12-slim-bookworm AS builder
+FROM python:3.13-slim-bookworm AS builder
 
 # Install uv binary from official Astral image
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
@@ -22,7 +22,7 @@ RUN rm -rf /app/.venv/lib/python*/site-packages/pandas/tests \
     find /app/.venv -type f -name "*.pyc" -delete
 
 # STAGE 2: Clean Production Runtime
-FROM python:3.12-slim-bookworm AS runner
+FROM python:3.13-slim-bookworm AS runner
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
