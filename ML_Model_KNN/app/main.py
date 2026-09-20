@@ -1,10 +1,3 @@
-"""
-ML Model Inference API — Root FastAPI Application.
-
-Mounts domain-specific routers for Iris and Titanic prediction
-models under /iris/* and /titanic/* prefixes respectively.
-"""
-
 import time
 import logging
 from contextlib import asynccontextmanager
@@ -15,20 +8,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routers.iris_router import router as iris_router
 from app.routers.titanic_router import router as titanic_router
+from app.routers.loan_router import router as loan_router
 from app.services.iris_service import iris_service
 from app.services.titanic_service import titanic_service
+from app.services.loan_service import loan_service
 from app.schemas.health_schemas import HealthResponse, ModelStatusDetail
 
 
-# ── Logging ─────────────────────────────────────────────
-logging.basicConfig(
-    level=settings.LOG_LEVEL,
-    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-)
+# Logging 
+logging.basicConfig(level=settings.LOG_LEVEL,format="%(asctime)s | %(levelname)s | %(name)s | %(message)s")
 logger = logging.getLogger("ml_api")
 
-
-# ── Lifespan — loads all models once at startup ────────
+# Lifespan — loads all models once at startup 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Initializing ML Model Inference Service v%s ...", settings.VERSION)
@@ -47,20 +38,27 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error("✗ Failed to load Titanic model: %s", e)
 
+    # Load Loan model
+    try:
+        loan_service.load_model()
+        logger.info("✓ Loan RandomForest model loaded successfully.")
+    except Exception as e:
+        logger.error("✗ Failed to load Loan model: %s", e)
+
     yield
     logger.info("Shutting down ML Model Inference Service.")
 
 
-# ── FastAPI app instance ────────────────────────────────
+# FastAPI app instance
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="Multi-model ML inference API serving Iris classification and Titanic survival prediction.",
+    description="Multi-model ML inference API serving Iris Titanic Loan.",
     lifespan=lifespan,
 )
 
 
-# ── CORS ────────────────────────────────────────────────
+#CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -70,7 +68,7 @@ app.add_middleware(
 )
 
 
-# ── Request latency tracking middleware ─────────────────
+# Request latency tracking middleware
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.perf_counter()
@@ -86,39 +84,45 @@ async def add_process_time_header(request: Request, call_next):
     )
     return response
 
+@app.get("/")
+def home():
+    return{
+        "message": "Welcome"
+    }
 
-# ── Global health endpoints ────────────────────────────
-
+# Global health endpoints
 @app.get("/health/live", status_code=status.HTTP_200_OK)
 def liveness():
     """Liveness probe — confirms the process is alive."""
     return {"status": "alive"}
 
 
-@app.get(
-    "/health/ready",
-    response_model=HealthResponse,
-    status_code=status.HTTP_200_OK,
-)
+@app.get("/health/ready",response_model=HealthResponse,status_code=status.HTTP_200_OK)
 def readiness():
     """Readiness probe — reports load status of every model."""
     iris_ready = iris_service.is_ready()
     titanic_ready = titanic_service.is_ready()
+    loan_ready = loan_service.is_ready()
 
     models = {
         "iris": ModelStatusDetail(
             loaded=iris_ready,
             version=iris_service.metadata.get("model_version", "unknown"),
             model_type=iris_service.metadata.get("model_type", "KNN"),
-        ),
+            ),
         "titanic": ModelStatusDetail(
             loaded=titanic_ready,
             version=titanic_service.metadata.get("model_version", "unknown"),
             model_type=titanic_service.metadata.get("model_type", "LinearSVC"),
         ),
+        "loan": ModelStatusDetail(
+            loaded=loan_ready,
+            version=loan_service.metadata.get("model_version", "unknown"),
+            model_type=loan_service.metadata.get("model_type", "RandomForestClassifier"),
+        ),
     }
 
-    all_ready = iris_ready and titanic_ready
+    all_ready = iris_ready and titanic_ready and loan_ready
 
     if not all_ready:
         raise HTTPException(
@@ -129,6 +133,7 @@ def readiness():
     return HealthResponse(status="ready", models=models)
 
 
-# ── Mount domain routers ───────────────────────────────
+#domain routers 
 app.include_router(iris_router, prefix="/iris")
 app.include_router(titanic_router, prefix="/titanic")
+app.include_router(loan_router, prefix="/loan")
