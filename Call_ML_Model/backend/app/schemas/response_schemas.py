@@ -39,10 +39,13 @@ class VisualizationData(BaseModel):
     When domain="iris":  prediction, probabilities, feature_comparison are populated.
     When domain="titanic": survived, survival_probability, confidence, risk_factors,
                            passenger_profile are populated.
+    When domain="loan": approved, approval_probability, cibil_rating, risk_factors,
+                        financial_summary, input_features are populated.
     Both domains always have: analysis, visualization_hints.
     """
 
     domain: str = Field(..., description='Domain discriminator: "iris" or "titanic"')
+    domain: str = Field(..., description='Domain discriminator: "iris", "titanic", or "loan"')
 
     # ── Iris fields (present when domain="iris") ───────
     prediction: Optional[PredictionDetail] = None
@@ -55,6 +58,14 @@ class VisualizationData(BaseModel):
     confidence: Optional[float] = None
     risk_factors: Optional[dict[str, str]] = None
     passenger_profile: Optional[dict[str, Any]] = None
+
+    # ── Loan fields (present when domain="loan") ───────
+    approved: Optional[bool] = None
+    approval_probability: Optional[float] = None
+    cibil_rating: Optional[str] = None
+    financial_summary: Optional[dict[str, Any]] = None
+    feature_importance: Optional[dict[str, float]] = None
+    input_features: Optional[dict[str, Any]] = None
 
     # ── Shared fields ──────────────────────────────────
     analysis: str

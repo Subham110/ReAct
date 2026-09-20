@@ -17,6 +17,8 @@ from app.schemas.ml_contract import (
     KNNHealthResponse,
     TitanicPassenger,
     TitanicPrediction,
+    LoanFeatures,
+    LoanPrediction,
 )
 from app.core.exceptions import KNNServiceUnavailable
 
@@ -37,7 +39,7 @@ class MLClient:
         if self._client:
             await self._client.aclose()
 
-    # ── Iris Endpoints ─────────────────────────────────
+    #Iris Endpoints
 
     async def predict_iris(self, features: IrisFeatures) -> KNNPrediction:
         """POST /iris/predict with exponential backoff retry."""
@@ -73,7 +75,7 @@ class MLClient:
             logger.error("Iris batch predict failed: %s", e)
             raise KNNServiceUnavailable(str(e))
 
-    # ── Titanic Endpoints ──────────────────────────────
+    #Titanic Endpoints
 
     async def predict_titanic(self, passenger: TitanicPassenger) -> TitanicPrediction:
         """POST /titanic/predict with exponential backoff retry."""
@@ -96,7 +98,30 @@ class MLClient:
                     logger.error("Titanic predict failed after retries: %s", e)
                     raise KNNServiceUnavailable(str(e))
 
-    # ── Health ─────────────────────────────────────────
+    # Loan Endpoints 
+
+    async def predict_loan(self, loan_input: LoanFeatures) -> LoanPrediction:
+        """POST /loan/predict with exponential backoff retry."""
+        delays = [0.5, 1.0, 2.0]
+        for attempt, delay in enumerate(delays + [0]):
+            try:
+                response = await self._client.post(
+                    "/loan/predict", json=loan_input.model_dump()
+                )
+                response.raise_for_status()
+                return LoanPrediction.model_validate(response.json())
+            except httpx.RequestError as e:
+                if attempt < len(delays):
+                    logger.warning(
+                        "Loan predict attempt %d failed, retrying in %.1fs...",
+                        attempt + 1, delay,
+                    )
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error("Loan predict failed after retries: %s", e)
+                    raise KNNServiceUnavailable(str(e))
+
+    #Health 
 
     async def health_check(self) -> KNNHealthResponse:
         """GET /health/ready — reports status of all loaded models."""

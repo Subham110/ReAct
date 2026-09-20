@@ -17,6 +17,7 @@ from app.config import settings
 from app.tools.botanical_tools import (
     predict_iris_species,
     predict_titanic_survival,
+    predict_loan_approval,
     get_model_info,
 )
 from app.agents.prompts import SYSTEM_PROMPT
@@ -35,7 +36,12 @@ class BotanicalAgent:
             max_retries=2,
             request_timeout=30,
         )
-        self.tools = [predict_iris_species, predict_titanic_survival, get_model_info]
+        self.tools = [
+            predict_iris_species,
+            predict_titanic_survival,
+            predict_loan_approval,
+            get_model_info,
+        ]
         self.tools_map = {tool.name: tool for tool in self.tools}
         self.llm_with_tools = self.llm.bind_tools(self.tools)
 
@@ -71,11 +77,27 @@ class BotanicalAgent:
                             {"error": f"Unknown tool: {tool_name}"}
                         )
 
+                    # If tool returned an error, fail fast with a descriptive error
+                    if isinstance(tool_result, str) and '"error"' in tool_result:
+                        try:
+                            err_data = json.loads(tool_result)
+                            if "error" in err_data:
+                                raise AgentExecutionError(
+                                    f"Tool '{tool_name}' failed: {err_data['error']}"
+                                )
+                        except json.JSONDecodeError:
+                            pass
+
                     messages.append(
                         ToolMessage(content=str(tool_result), tool_call_id=tool_id)
                     )
 
-                # 3. FINALIZE: Get final structured JSON from LLM
+                # 3. FINALIZE: Prompt LLM for structured JSON response without tools
+                messages.append(
+                    SystemMessage(
+                        content="Provide the final structured JSON response based on the tool result. Output ONLY the raw JSON object. Do not call any tools."
+                    )
+                )
                 final_response = await self.llm.ainvoke(messages)
                 output_str = final_response.content
             else:

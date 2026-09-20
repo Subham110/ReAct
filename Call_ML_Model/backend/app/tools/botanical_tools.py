@@ -82,6 +82,57 @@ def predict_titanic_survival(
     except Exception as e:
         return json.dumps({"error": f"Failed to predict survival: {str(e)}"})
 
+@tool
+def predict_loan_approval(
+    no_of_dependents: int,
+    education: str,
+    self_employed: str,
+    income_annum: float,
+    loan_amount: float,
+    loan_term: int,
+    cibil_score: int,
+    residential_assets_value: float = 0.0,
+    commercial_assets_value: float = 0.0,
+    luxury_assets_value: float = 0.0,
+    bank_asset_value: float = 0.0,
+) -> str:
+    """Predict whether a loan application will be approved using RandomForestClassifier.
+    Args:
+        no_of_dependents: Number of financial dependents (0-10)
+        education: Education level ("Graduate" or "Not Graduate")
+        self_employed: Self-employment status ("Yes" or "No")
+        income_annum: Annual income in INR (e.g. 5000000 for 50 lakhs)
+        loan_amount: Requested loan amount in INR (e.g. 10000000 for 1 crore)
+        loan_term: Loan repayment term in years (1-30)
+        cibil_score: CIBIL credit score (300-900), higher is better
+        residential_assets_value: Value of residential property owned (default 0)
+        commercial_assets_value: Value of commercial property owned (default 0)
+        luxury_assets_value: Value of luxury assets like vehicles/jewelry (default 0)
+        bank_asset_value: Liquid assets in bank accounts (default 0)
+    Returns:
+        JSON string with approval decision, probability, CIBIL rating, risk factors, and financial summary
+    """
+    payload = {
+        "no_of_dependents": no_of_dependents,
+        "education": education,
+        "self_employed": self_employed,
+        "income_annum": income_annum,
+        "loan_amount": loan_amount,
+        "loan_term": loan_term,
+        "cibil_score": cibil_score,
+        "residential_assets_value": residential_assets_value,
+        "commercial_assets_value": commercial_assets_value,
+        "luxury_assets_value": luxury_assets_value,
+        "bank_asset_value": bank_asset_value,
+    }
+
+    try:
+        with httpx.Client(base_url=settings.KNN_SERVICE_URL, timeout=10.0) as client:
+            response = client.post("/loan/predict", json=payload)
+            response.raise_for_status()
+            return json.dumps(response.json())
+    except Exception as e:
+        return json.dumps({"error": f"Failed to predict loan approval: {str(e)}"})
 
 @tool
 def get_model_info() -> str:
