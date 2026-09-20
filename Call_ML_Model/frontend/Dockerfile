@@ -1,6 +1,4 @@
-# ==============================================================================
 # STAGE 1: Builder (Compiles React 19 SPA with Node)
-# ==============================================================================
 FROM node:22-alpine AS builder
 
 WORKDIR /app
@@ -13,9 +11,7 @@ RUN npm ci --prefer-offline --no-audit
 COPY . .
 RUN npm run build
 
-# ==============================================================================
 # STAGE 2: Clean Production Web Server & Reverse Proxy
-# ==============================================================================
 FROM nginx:alpine-slim AS runner
 
 # Remove default nginx static files
